@@ -1,0 +1,88 @@
+const Engine = Matter.Engine;
+const World = Matter.World;
+const Bodies = Matter.Bodies;
+const Constraint = Matter.Constraint;
+
+let engine;
+let world;
+var ball;
+var ball2;
+var ground;
+var con;
+var con2;
+
+
+
+function setup() {
+  createCanvas(400,400);
+  engine = Engine.create();
+  
+  world = engine.world;
+
+  var ball_options = {
+    restitution: 1.5,
+  }
+  
+  
+  ball = Bodies.circle(200,50,10,ball_options);
+  World.add(world,ball);
+
+  ball2 = Bodies.circle(200,250,10,ball_options);
+  World.add(world,ball);
+
+  
+  
+  con = Matter.Constraint.create({
+          pointA:{x:200,y:20},
+          bodyB:ball,
+          pointB:{x:0,y:0},
+          length:100,
+          stiffness:0.1
+        });
+  
+      World.add(world,con);
+      
+  var options ={
+    bodyA: ball,
+    bodyB: ball2,
+    length: 100,
+    stiffness: 0.1,
+  }
+
+  con2 = Constraint.create(options);
+  World.add(world,con2);
+  
+  rectMode(CENTER);
+  ellipseMode(RADIUS);
+  
+}
+
+function draw() 
+{
+  background(51);
+  Engine.update(engine);
+  ellipse(ball.position.x,ball.position.y,10);
+  
+  ellipse(ball2.position.x,ball2.position.y,10);
+
+  push();
+  strokeWeight(2);
+  stroke(255);
+  line(con.pointA.x,con.pointA.y,ball.position.x,ball.position.y);
+  line(ball.position.x,ball.position.y,ball2.position.x,ball2.position.y);
+  pop();
+  
+}
+
+function keyPressed()
+{
+  if(keyCode==RIGHT_ARROW)
+    {
+      Matter.Body.applyForce(ball,{x:0,y:0},{x:1.2,y:0});
+    }
+    if(keyCode==LEFT_ARROW)
+    {
+      Matter.Body.applyForce(ball,{x:0,y:0},{x:-2.0,y:0});
+    }
+}
+
